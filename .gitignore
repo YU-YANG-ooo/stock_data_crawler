@@ -1,0 +1,4 @@
+db.ini
+__pycache__/
+.venv/
+*.xlsx
