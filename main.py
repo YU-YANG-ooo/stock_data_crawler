@@ -1,6 +1,7 @@
-from db import init_db, insert_stock_data, insert_news_data, query_news_by_date, save_to_excel
+from db import init_db, insert_stock_data, insert_news_data, query_news_by_date, save_to_excel, query_stock_by_date
 from stock_data import stock_data_get
 from news_data import news_data_get
+from chart import plot_stock
 import datetime as dt
 
 #建立TABLE
@@ -10,7 +11,8 @@ while True:
     print('\n====股票資料系統====')
     print('1.抓取股價和新聞資料')
     print('2.查詢股票相關新聞')
-    print('3.離開程式')
+    print('3.查詢股價與新聞並繪製成圖表')
+    print('4.離開程式')
     
     choice = input('請選擇功能：').strip()
     
@@ -65,7 +67,33 @@ while True:
             except Exception as e:
                 print(f'查詢發生錯誤：{e}，請重新輸入')
 
+    
+    
     elif choice == '3':
+        while True:
+            query_stock_data = input('查詢哪隻股票的價格（ex.2330.TW）:')
+            query_stock_start_date = input('查詢新聞的起始日期（ex.2026-04-28):')
+            query_stock_end_date = input('查詢新聞的結束日期（ex.2026-04-28):').strip()
+            
+            if not query_stock_data or not query_stock_start_date:
+                print('股票代碼和起始日期不能為空，請重新輸入')
+                continue
+            if not query_stock_end_date:
+                query_stock_end_date = query_stock_start_date
+            
+            try:
+                result = query_stock_by_date(query_stock_data, query_stock_start_date, query_stock_end_date)
+                news_result = query_news_by_date(query_stock_data, query_stock_start_date, query_stock_end_date)
+                if result.empty:
+                    print('查無資料，請重新輸入')
+                else:
+                    plot_stock(result, query_stock_data, news_result)
+                    break   
+            except Exception as e:
+                print(f'查詢發生錯誤：{e}，請重新輸入')
+    
+    
+    elif choice == '4':
         print('===程式結束，感謝使用===')
         break
     

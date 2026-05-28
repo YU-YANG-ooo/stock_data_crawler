@@ -80,7 +80,7 @@ def insert_news_data(news_list):
     print('----新聞寫入完成----')
     
 
-#查詢功能
+#查詢新聞功能
 def query_news_by_date(stock_id, start_date, end_date):
     query_sql = '''
         SELECT pub_date, title, source, link
@@ -91,7 +91,20 @@ def query_news_by_date(stock_id, start_date, end_date):
     with psycopg2.connect(**parser['postgres']) as conn:
         query_df = pd.read_sql_query(query_sql, conn, params = (stock_id, start_date, end_date))
     return query_df
+
+#查詢股價功能
+def query_stock_by_date(stock_id, start_date, end_date):
+    query_sql = '''
+        SELECT date, stock_id, open, high, low, close, volume
+        From stocks_data
+        WHERE stock_id = %s AND date BETWEEN %s AND %s
+        ORDER BY date 
+    '''
+    with psycopg2.connect(**parser['postgres']) as conn:
+        query_df = pd.read_sql_query(query_sql, conn, params = (stock_id, start_date, end_date))
     
+    return query_df
+
 #存檔功能
 def save_to_excel(df, filename):
     df.to_excel(filename, index = False, engine = 'openpyxl')
