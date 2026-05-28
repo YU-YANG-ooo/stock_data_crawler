@@ -1,6 +1,6 @@
 # Stock Data Crawler（股票新聞爬蟲與資料庫整合）
 
-以Python建立的股票資料自動化系統，整盒股價抓取，財經新聞爬蟲與PostgreSQL資料庫，支援資料查詢與匯出Excel。
+以Python建立的股票資料自動化系統，整合股價抓取，財經新聞Google RSS爬蟲與PostgreSQL資料庫，支援資料查詢與匯出Excel。
 
 ---
 ## 功能特色
@@ -9,6 +9,8 @@
 - 資料庫整合：所有資料自動寫入 PostgreSQL，避免重複寫入
 - 新聞查詢：支援依股票代號與日期區間查詢新聞
 - 匯出 Excel：查詢結果自動匯出為格式化 Excel 檔案
+- 股價查詢並繪製均線與成交量圖表
+- 新聞情緒分析（正向/負向/中性分類）
 ## 專案結構
 ```
 stock_data_crawler/
@@ -18,6 +20,8 @@ stock_data_crawler/
 |--db.py
 |--db.ini.example
 |--pyproject.toml
+|--chart.py
+|--sentiment.py
 ```
 ## 環境需求
 - Python 3.x
@@ -34,6 +38,7 @@ stock_data_crawler/
 |`psycopg2-binary`|PostgreSQL連線|
 |`pandas`|資料處理與格式建立|
 |`openpyxl`|Excel匯出|
+|`matploylib`|股價成交量整合圖表繪製|
 ## 安裝與設定
 
 **1. 安裝套件**
@@ -45,7 +50,7 @@ poetry install
 
 或使用 pip：
 ```bash
-pip install requests beautifulsoup4 lxml yfinance psycopg2-binary pandas openpyxl
+pip install requests beautifulsoup4 lxml yfinance psycopg2-binary pandas openpyxl matplotlib
 ```
 
 **2. 進入虛擬環境**
@@ -76,11 +81,13 @@ python3 main.py
 =====股票資料系統=====
 1.抓取股價與新聞資料
 2.查詢股票相關新聞
-3.離開程式 
+3.查詢股價與新聞並繪製成圖表
+4.離開程式
 ```
 - **選項 1** : 輸入股票代號（如`2330.TW`）與關鍵字，自動抓取股價與新聞並寫入資料庫
 - **選項 2** : 輸入股票代號與日期區間，查詢新聞並匯出Excel檔案
-- **選項 3** : 離開程式
+- **選項 3** : 輸入股票代號與日期區間，繪製股價交易量整合新聞情緒圖表
+- **選項 4** : 離開程式
 ## 資料庫結構
 
 ### stocks_data
